@@ -20,14 +20,16 @@
     --shadow:0 10px 30px rgba(0,0,0,.35);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0}
-  html,body{height:100%}
+  html{height:100%}
   body{
     font-family:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;
     background:
       radial-gradient(120% 80% at 0% 0%, #1d2c55 0%, transparent 55%),
       radial-gradient(120% 80% at 100% 0%, #2a2150 0%, transparent 50%),
       var(--bg);
-    color:var(--text); padding-bottom:96px; overflow-x:hidden;
+    background-attachment:fixed;
+    color:var(--text); min-height:100%; overflow-x:hidden;
+    padding-bottom:calc(120px + env(safe-area-inset-bottom));
   }
   .safe{padding-top:env(safe-area-inset-top)}
 
@@ -245,7 +247,10 @@ const ic = {
 document.body.innerHTML = document.body.innerHTML.replace(/\$\{ic\.(\w+)\}/g, (_,k)=>ic[k]||'');
 
 const tg = window.Telegram ? window.Telegram.WebApp : null;
-if (tg){ tg.ready(); tg.expand(); try{tg.setHeaderColor('#1f4fb5'); tg.setBackgroundColor('#0f1830');}catch(e){} }
+if (tg){ tg.ready(); tg.expand();
+  try{tg.setHeaderColor('#1f4fb5'); tg.setBackgroundColor('#0f1830');}catch(e){}
+  try{tg.disableVerticalSwipes();}catch(e){}   // чтобы свайп вниз не закрывал, а прокручивал
+}
 function haptic(s){ try{ tg.HapticFeedback.impactOccurred(s||'light'); }catch(e){} }
 
 // ── данные приборов ──
