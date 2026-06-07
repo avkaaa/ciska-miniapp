@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ЦИСКА</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --blue:#1f5aa6; --blued:#16407a; --gold:#c9a227; --orange:#d97a16;
+    --green:#1f7a3d; --ink:#1c2733; --grey:#6b7787; --line:#e2e8f2;
+    --bg: var(--tg-theme-bg-color, #f4f7fb);
+    --card: var(--tg-theme-secondary-bg-color, #ffffff);
+    --text: var(--tg-theme-text-color, #1c2733);
+    --hint: var(--tg-theme-hint-color, #6b7787);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--text); padding-bottom:78px}
+  .head{background:linear-gradient(135deg,var(--blued),var(--blue)); color:#fff;
+    padding:22px 18px 18px; border-radius:0 0 20px 20px}
+  .brand{font-size:26px; font-weight:800; letter-spacing:2px}
+  .brand small{display:block; font-size:11px; font-weight:500; letter-spacing:.5px;
+    opacity:.85; margin-top:3px}
+  .wrap{padding:16px 14px 0}
+  .tab{display:none} .tab.on{display:block; animation:f .25s ease}
+  @keyframes f{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
+  h2{font-size:15px; margin:4px 2px 12px; color:var(--hint); font-weight:600;
+    text-transform:uppercase; letter-spacing:1px}
+
+  /* Пульт */
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .act{background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:18px 14px; cursor:pointer; transition:transform .1s, box-shadow .2s;
+    box-shadow:0 2px 10px rgba(20,40,80,.05)}
+  .act:active{transform:scale(.96)}
+  .act .ic{font-size:30px} .act .t{font-weight:700; margin-top:8px; font-size:15px}
+  .act .d{font-size:12px; color:var(--hint); margin-top:3px; line-height:1.3}
+
+  /* Формы */
+  label{display:block; font-size:13px; font-weight:600; margin:14px 2px 6px}
+  input,textarea{width:100%; border:1px solid var(--line); border-radius:12px;
+    padding:13px 14px; font-size:16px; font-family:inherit; background:var(--card);
+    color:var(--text); outline:none}
+  input:focus,textarea:focus{border-color:var(--blue)}
+  textarea{min-height:84px; resize:vertical}
+  .hint{font-size:12px; color:var(--hint); margin:6px 2px}
+  .btn{display:block; width:100%; border:none; border-radius:14px; padding:15px;
+    font-size:16px; font-weight:700; color:#fff; background:var(--blue); margin-top:18px;
+    cursor:pointer} .btn:active{opacity:.85}
+
+  /* Каталог */
+  .search{margin-bottom:12px}
+  .dev{background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:14px; margin-bottom:10px; box-shadow:0 2px 10px rgba(20,40,80,.04)}
+  .dev .top{display:flex; align-items:center; justify-content:space-between; cursor:pointer}
+  .dev .name{font-size:17px; font-weight:800; color:var(--blued)}
+  .dev .purpose{font-size:13px; color:var(--hint); margin-top:3px}
+  .badge{font-size:11px; font-weight:700; padding:4px 9px; border-radius:20px; white-space:nowrap}
+  .b-ok{background:#e4f3ea; color:var(--green)} .b-work{background:#fbeedd; color:var(--orange)}
+  .dev .more{max-height:0; overflow:hidden; transition:max-height .3s ease}
+  .dev.open .more{max-height:320px}
+  .row{display:flex; justify-content:space-between; font-size:13px; padding:7px 0;
+    border-top:1px solid var(--line)}
+  .row .k{color:var(--hint)} .row .v{font-weight:600; text-align:right; max-width:60%}
+  .cta{margin-top:10px; font-size:13px; font-weight:700; color:var(--blue); cursor:pointer}
+
+  /* Нижняя навигация */
+  .nav{position:fixed; left:0; right:0; bottom:0; display:flex; background:var(--card);
+    border-top:1px solid var(--line); padding:6px 0 10px}
+  .nav div{flex:1; text-align:center; font-size:11px; color:var(--hint); padding:6px 0; cursor:pointer}
+  .nav div.on{color:var(--blue); font-weight:700}
+  .nav .ni{font-size:22px; display:block}
+</style>
+</head>
+<body>
+<div class="head">
+  <div class="brand">ЦИСКА<small>цифровой ассистент</small></div>
+</div>
+
+<div class="wrap">
+
+  <!-- ПУЛЬТ -->
+  <section id="t-panel" class="tab on">
+    <h2>Что сделать</h2>
+    <div class="grid">
+      <div class="act" onclick="cmd('Оформить пропуск')">
+        <div class="ic">🪪</div><div class="t">Пропуск</div>
+        <div class="d">заявка на гостя</div></div>
+      <div class="act" onclick="cmd('Отчёт о командировке')">
+        <div class="ic">✈️</div><div class="t">Командировка</div>
+        <div class="d">авансовый отчёт</div></div>
+      <div class="act" onclick="cmd('Договор ГПХ')">
+        <div class="ic">📄</div><div class="t">Договор ГПХ</div>
+        <div class="d">гражд.-правовой</div></div>
+      <div class="act" onclick="go('devices')">
+        <div class="ic">🔬</div><div class="t">Приборы</div>
+        <div class="d">каталог + Госреестр</div></div>
+    </div>
+    <h2 style="margin-top:22px">Быстрые действия</h2>
+    <div class="grid">
+      <div class="act" onclick="cmd('Отправь бухгалтеру')">
+        <div class="ic">📧</div><div class="t">Бухгалтеру</div>
+        <div class="d">отправить документы</div></div>
+      <div class="act" onclick="cmd('Найди документ')">
+        <div class="ic">🔎</div><div class="t">Поиск</div>
+        <div class="d">найти документ</div></div>
+    </div>
+  </section>
+
+  <!-- ПРОПУСК -->
+  <section id="t-pass" class="tab">
+    <h2>Заявка на пропуск</h2>
+    <label>ФИО гостя (полностью)</label>
+    <textarea id="fio" placeholder="Иванов Иван Иванович&#10;Можно несколько - каждый с новой строки"></textarea>
+    <div class="hint">Для нескольких гостей - каждого с новой строки.</div>
+    <label>Дата посещения</label>
+    <input type="date" id="pdate">
+    <button class="btn" onclick="sendPass()">Оформить пропуск</button>
+    <div class="hint" style="text-align:center; margin-top:12px">Данные уйдут ассистенту - он сгенерирует PDF.</div>
+  </section>
+
+  <!-- ПРИБОРЫ -->
+  <section id="t-devices" class="tab">
+    <h2>Приборы и Госреестр СИ</h2>
+    <input class="search" id="q" placeholder="🔍 Поиск по названию или назначению" oninput="render()">
+    <div id="list"></div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <div id="n-panel" class="on" onclick="go('panel')"><span class="ni">⚡</span>Пульт</div>
+  <div id="n-pass" onclick="go('pass')"><span class="ni">🪪</span>Пропуск</div>
+  <div id="n-devices" onclick="go('devices')"><span class="ni">🔬</span>Приборы</div>
+</div>
+
+<script>
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+if (tg){ tg.ready(); tg.expand(); }
+function haptic(){ try{ tg.HapticFeedback.impactOccurred('light'); }catch(e){} }
+
+// ---- данные приборов ----
+const DEVICES = [
+ {n:'ОТВМ', ok:1, reg:'98575-26', p:'Определение температуры вспышки нефтепродуктов',
+  d:{'Тип':'анализатор температуры вспышки','Погрешность':'±1 / ±2 °C','Срок службы':'не менее 5 лет','ТУ':'003-49755974-2024'}},
+ {n:'ПСТ-10А', ok:1, reg:'95957-25', p:'Переносной микроомметр (сопротивление пост. току)',
+  d:{'Тип':'микроомметр переносной','Срок службы':'не менее 5 лет','ТУ':'005-49755974-2024'}},
+ {n:'ТЭ', ok:1, reg:'98433-26', p:'Течеискатель элегаза (объёмная доля SF6)',
+  d:{'Тип':'течеискатель SF6','Срок службы':'не менее 5 лет','ТУ':'004-49755974-2024'}},
+ {n:'ИДП-ТГ', ok:1, reg:'92910-24', p:'Измерение диэлектрических потерь (ёмкость, tg δ)',
+  d:{'Тип':'измеритель tg δ и ёмкости','Срок службы':'не менее 5 лет','ТУ':'001-49755974-2024'}},
+ {n:'КПИУ', ok:1, reg:'97618-26', p:'Испытание электрической прочности изоляции до 100 кВ',
+  d:{'Диапазон ВН':'0,3-100 кВ, 50 Гц','Погрешность':'±3 %','Ток вывода':'0-30 А','Срок службы':'не менее 5 лет','ТУ':'006-49755974-2024'}},
+ {n:'ВТМ', ok:0, reg:'', p:'Влагосодержание трансформаторного масла',
+  d:{'Статус':'документы в подготовке','Срок службы':'не менее 5 лет','ТУ':'002-49755974-2024'}},
+ {n:'УКИ-1', ok:0, reg:'', p:'Ультразвуковой дефектоскоп изоляторов',
+  d:{'Статус':'документы в подготовке','Срок службы':'не менее 5 лет','ТУ':'007-49755974-2024'}},
+ {n:'ТМВ-1000', ok:0, reg:'', p:'Тестер характеристик ВН-выключателей',
+  d:{'Статус':'документы в подготовке','Срок службы':'не менее 5 лет','ТУ':'008-49755974-2024'}},
+];
+
+function render(){
+  const q = (document.getElementById('q').value||'').toLowerCase();
+  const list = document.getElementById('list'); list.innerHTML='';
+  DEVICES.filter(d => (d.n+' '+d.p).toLowerCase().includes(q)).forEach(d=>{
+    const rows = Object.entries(d.d).map(([k,v])=>
+      `<div class="row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+    const badge = d.ok ? `<span class="badge b-ok">в Госреестре · ${d.reg}</span>`
+                       : `<span class="badge b-work">в работе</span>`;
+    const el = document.createElement('div'); el.className='dev';
+    el.innerHTML = `<div class="top" onclick="this.parentNode.classList.toggle('open')">
+        <div><div class="name">${d.n}</div><div class="purpose">${d.p}</div></div>${badge}</div>
+      <div class="more">${rows}
+        <div class="cta" onclick="cmd('Сделай КП по прибору ${d.n}')">📑 Запросить коммерческое предложение</div>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+render();
+
+// ---- навигация ----
+function go(name){
+  haptic();
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.nav div').forEach(t=>t.classList.remove('on'));
+  document.getElementById('t-'+name).classList.add('on');
+  document.getElementById('n-'+name).classList.add('on');
+  window.scrollTo(0,0);
+}
+
+// ---- отправка данных боту ----
+function send(obj){
+  haptic();
+  if (tg && tg.sendData){ tg.sendData(JSON.stringify(obj)); }
+  else { alert('Demo (вне Telegram):\n'+JSON.stringify(obj,null,2)); }
+}
+function cmd(text){ send({action:'command', text:text}); }
+function sendPass(){
+  const fio = document.getElementById('fio').value.trim();
+  const date = document.getElementById('pdate').value;
+  if(!fio){ alert('Укажите ФИО гостя'); return; }
+  send({action:'pass', fio:fio, date:date});
+}
+
+// дата по умолчанию - сегодня
+(function(){ const t=new Date(); const z=n=>String(n).padStart(2,'0');
+  document.getElementById('pdate').value = `${t.getFullYear()}-${z(t.getMonth()+1)}-${z(t.getDate())}`;
+})();
+</script>
+</body>
+</html>
